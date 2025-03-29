@@ -3,7 +3,7 @@
  * Plugin Name: Easy Slider Revolution
  * Plugin URI: https://wordpress.org/plugins/easy-slider-revolution
  * Description: Easy Slider Revolution allows you to create a slider with text, HTML, shortcodes and customized button.  
- * Version: 1.1.1
+ * Version: 1.1.2
  *
  * @package     easy_slider_revolution
  * @author      Trident Technolabs

@@ -709,7 +709,7 @@ function easy_slider_revolution_shortcode( $atts ) {
 					
 				}
 				$output .= "<style>.SliderButton".$i."{background:".$slide_data[ 'slide' . $i . '_button_background' ]." !important;color:".$slide_data[ 'slide' . $i . '_button_color' ]." !important}.SliderButton".$i.":hover{background:".$slide_data[ 'slide' . $i . '_button_color' ]."!important;color:".$slide_data[ 'slide' . $i . '_button_background' ]."!important}</style>";
-				$output .= "<div class='textContainer'>". $slide_content . "</div><div><a href='javascript:void(0)'  type='button'   target='".$slide_data[ 'slide' .$i. '_link_target']."' class='btn SliderButton".$i."'>" . $slide_data[ 'slide' . $i . '_link_text' ]."</a></div></div>\n"; // .sa_hover_container
+				$output .= "<div class='textContainer'>". $slide_content . "</div><div><a href=' ".esc_url($slide_data[ 'slide' . $i . '_link_url' ])."'  type='button'   target='".$slide_data[ 'slide' .$i. '_link_target']."' class='btn SliderButton".$i."'>" . $slide_data[ 'slide' . $i . '_link_text' ]."</a></div></div>\n"; // .sa_hover_container
 			}
 			$output .= "</div>\n"; // .owl-carousel
 

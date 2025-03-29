@@ -2,8 +2,8 @@
 Contributors: tridenttechnolabs
 Tags: slider,easy slider,image slider,content slider,slider with button 
 Requires at least: 5.1
-Tested up to: 6.6.2
-Stable tag: 1.1.1
+Tested up to: 6.7.1
+Stable tag: 1.1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,8 +34,10 @@ Please view the [FAQ Page](https://wordpress.org/plugins/easy-slider-revolution/
 You will now see the `Easy Sliders` menu in your WordPress admin panel.
 
 == Security Note ==
-Version 1.1.0: This update addresses a security vulnerability related to improper input sanitization.
-Version 1.1.1: Bug Fix: Resolved shortcode issue in Gutenberg and Classic Editor. The shortcode now works seamlessly in both editors.
+
+*Version 1.1.0: This update addresses a security vulnerability related to improper input sanitization.
+*Version 1.1.1: Bug Fix: Resolved shortcode issue in Gutenberg and Classic Editor. The shortcode now works seamlessly in both editors.
+*Version 1.1.2: Fixed an issue with link button URLs not being applied correctly.
 
 == Frequently Asked Questions ==
 
@@ -60,6 +62,13 @@ The `Min Height` setting is also available in the slider settings.
 For more details, visit our [plugin page](https://wordpress.org/plugins/easy-slider-revolution/).
 
 ==changelog ==
+
+= 1.1.2 =
+
+*Bug Fix: Resolved an issue with slide button URLs not being applied correctly.
+
+*Improved stability and performance.
+
 = 1.1.1 =
 
 *Bug Fix: Resolved shortcode issue in Gutenberg and Classic Editor. The shortcode now works seamlessly in both editors.
