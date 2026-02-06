@@ -1,9 +1,9 @@
-=== Easy Slider===
+=== Easy Slider ===
 Contributors: tridenttechnolabs
-Tags: slider,easy slider,image slider,content slider,slider with button 
+Tags: slider,easy slider,image slider,content slider,slider with button
 Requires at least: 5.1
-Tested up to: 6.8
-Stable tag: 1.1.2
+Tested up to: 6.9
+Stable tag: 1.1.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,6 +23,29 @@ Easy Slider provides many features, which include:
 You can create an image slider in just minutes, with awesome features you can easily add images to the slider, drag & drop images to re-order to fit your needs. No need to re-upload all your images because the plugin will use images from your media library.
 
 [EASY SLIDER DEMO](https://tridenttechnolabs.com/easy-slider-plugin/)
+
+## Upgrade to Easy Slider Advanced Pro 🚀
+
+Take your sliders to the **next level** with Easy Slider Advanced Pro — designed for professionals, agencies, and businesses that want more power, more style, and more control.
+
+### ✨ Pro-Only Features
+- 🎥 **Video Background Slides** – Add YouTube, Vimeo, or self-hosted videos as backgrounds for stunning hero sliders.
+- 🎨 **Advanced Animations & Effects** – Smooth fade, slide, zoom, parallax, and 3D transitions.
+- ⏱ **Per-Slide Duration Control** – Show important slides longer, or speed up simple ones.
+- 🎯 **Multiple Button Styles & Positions** – Place CTAs anywhere: left, right, center, or overlay.
+- 🖌 **Extra Styling Options** – Customize fonts, colors, overlays, and gradients without writing code.
+- 📱 **Touch, Drag & Swipe Optimized** – Perfect experience on mobile, tablet, and desktop.
+- ⚡ **Optimized Performance** – Lightweight code built with Swiper.js for ultra-fast loading.
+- 🛠 **Premium Support** – Priority email support from our expert team.
+
+### 💡 Perfect For:
+- Landing pages that need high-impact visuals
+- WooCommerce product sliders with CTA buttons
+- Agencies & freelancers creating client sites
+- Businesses that need modern, responsive hero sliders
+
+👉 [**Get Easy Slider Advanced Pro**](https://tridenttechnolabs.com/easy-slider-advanced.php) and unlock the full potential of your sliders!
+
 
 Please view the [FAQ Page](https://wordpress.org/plugins/easy-slider-revolution/faq/) for information on how to use `Easy Slider`.
 
@@ -49,7 +72,7 @@ When you are editing your slider within the WordPress Dashboard, you will see a 
 
 The `Slide Background` box for each slide in your slider allows you to define a background image for each slide. Note that the content you add to each slide within the slide editor box for each slide is foreground content and sits on `top` of the slide background - this content can be other images and textual content.
 
-To set a slide background image, click the `Set Image` button. The `Background Size` setting determines if, and how the background image is stretched/shrunk to cover the slide content area and the `Background Repeat` setting determines if the background image should be repeated, like tiles. 
+To set a slide background image, click the `Set Image` button. The `Background Size` setting determines if, and how the background image is stretched/shrunk to cover the slide content area and the `Background Repeat` setting determines if the background image should be repeated, like tiles.
 
 The `Min Height` setting is also available in the slider settings.
 
@@ -62,6 +85,11 @@ The `Min Height` setting is also available in the slider settings.
 For more details, visit our [plugin page](https://wordpress.org/plugins/easy-slider-revolution/).
 
 ==changelog ==
+
+= 1.1.3 =
+ * Security fix: Improved sanitization and escaping of user inputs.
+ * Hardened shortcode and slider settings handling.
+ * Minor performance and stability improvements.
 
 = 1.1.2 =
 

@@ -1,14 +1,14 @@
 <?php
 /**
- * Plugin Name: Easy Slider Revolution
+ * Plugin Name: Easy Slider
  * Plugin URI: https://wordpress.org/plugins/easy-slider-revolution
- * Description: Easy Slider Revolution allows you to create a slider with text, HTML, shortcodes and customized button.  
- * Version: 1.1.2
+ * Description: Easy Slider allows you to create a slider with text, HTML, shortcodes and customized button.
+ * Version: 1.1.3
  *
  * @package     easy_slider_revolution
  * @author      Trident Technolabs
  * @copyright   https://tridenttechnolabs.com
- * @license     GPLv2 or later
+ * License: GPLv2 or later
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

@@ -1,25 +1,26 @@
 <?php
 /**
  * #####################################################################
- * ### EASY SLIDER REVOLUTION PLUGIN - PHP FUNCTIONS FOR WordPress FRONT-END ###
+ * ### EASY SLIDER  PLUGIN - PHP FUNCTIONS FOR WordPress FRONT-END ###
  * #####################################################################
  *
  * @package     easy_slider_revolution
  * @author      Trident Technolabs
- * @copyright   https://tridenttechnolabs.com 
+ * @copyright   https://tridenttechnolabs.com
  * @license     GPLv2 or later
- * Version: 1.1.1
+ * Version: 1.1.3
  */
-
-add_shortcode( 'easy-slider-revolution', 'easy_slider_revolution_shortcode' );
+if ( ! defined( 'ABSPATH' ) ) exit; // EXIT IF ACCESSED DIRECTLY.
+add_shortcode( 'easy-slider-revolution', 'esr_shortcode_callback' );
 
 /**
  * ##### ROOT FUNCTION THAT IS CALLED TO BY THE 'Easy Slider' SHORTCODE #####
  *
  * @param array $atts Shortcode attributes.
  */
-if(!function_exists('easy_slider_revolution_shortcode')){
-function easy_slider_revolution_shortcode( $atts ) {
+if(!function_exists('esr_shortcode_callback')){
+	// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
+function esr_shortcode_callback( $atts ) {
 	wp_enqueue_script( 'jquery' );
 	wp_register_script( 'owl_carousel_js', ESRCPT_PLUGIN_PATH . 'owl-carousel/owl.carousel.min.js', array( 'jquery' ), '2.2.1', true );
 	wp_enqueue_script( 'owl_carousel_js' );
@@ -701,12 +702,12 @@ function easy_slider_revolution_shortcode( $atts ) {
 						$output .= "<div id='" . $css_id . "' class='sa_hover_container' style='" . esc_attr( $slide_style ) . "'>";
 					}
 				}
-				
+
 				if ( 'true' === $slide_data['vert_center'] ) {
 					// vertically center content within each slide.
 					// (we do this by wrapping slide content in a '<div>' wrapper.
 					$slide_content = "<div class='sa_vert_center'>" . $slide_content . "</div>";
-					
+
 				}
 				$output .= "<style>.SliderButton".$i."{background:".$slide_data[ 'slide' . $i . '_button_background' ]." !important;color:".$slide_data[ 'slide' . $i . '_button_color' ]." !important}.SliderButton".$i.":hover{background:".$slide_data[ 'slide' . $i . '_button_color' ]."!important;color:".$slide_data[ 'slide' . $i . '_button_background' ]."!important}</style>";
 				$output .= "<div class='textContainer'>". $slide_content . "</div><div><a href=' ".esc_url($slide_data[ 'slide' . $i . '_link_url' ])."'  type='button'   target='".$slide_data[ 'slide' .$i. '_link_target']."' class='btn SliderButton".$i."'>" . $slide_data[ 'slide' . $i . '_link_text' ]."</a></div></div>\n"; // .sa_hover_container
@@ -856,7 +857,7 @@ if ($lightbox_count > 0) {
 			$items_width5 = intval( $slide_data['items_width5'] );
 			$items_width6 = intval( $slide_data['items_width6'] );
 			$single_item = 1;
-	
+
 			$output .= "<script type='text/javascript'>\n";
 			if ( '1' === $slide_data['sa_window_onload'] ) {
 				$output .= "	document.addEventListener('DOMContentLoaded', function() {\n";
@@ -868,7 +869,7 @@ if ($lightbox_count > 0) {
 			$output .= "		jQuery('#" . esc_attr( $slide_data['css_id'] ) . "').owlCarousel({\n";
 			if ( 1 === $single_item ) {
 				$output .= "			items : 1,\n";
-				
+
 				$output .= '			smartSpeed : ' . esc_attr( $slide_data['slide_transition'] ) . ",\n";
 			} else {
 				$output .= "			responsive:{\n";
@@ -981,7 +982,7 @@ if ($lightbox_count > 0) {
 					$output .= "				slide_height = Math.round(slide_height)+'px';\n";
 					$output .= "			}\n";
 
-					
+
 												// set the slide 'min-height' css value.
 					$output .= "			jQuery('#" . esc_attr( $slide_data['css_id'] ) . " .owl-item .sa_hover_container').css('min-height', slide_height);\n";
 					$output .= "		}\n";

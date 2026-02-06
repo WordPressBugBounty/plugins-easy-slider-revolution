@@ -1,15 +1,17 @@
 <?php
 /**
  * #####################################################################
- * ### EASY SLIDER REVOLUTION PLUGIN - PHP FUNCTIONS FOR WP DASHBOARD ###
+ * ### EASY SLIDER PLUGIN - PHP FUNCTIONS FOR WP DASHBOARD ###
  * #####################################################################
  *
  * @package     easy_slider_revolution
  * @author      Trident Technolabs
  * @copyright   https://tridenttechnolabs.com
  * @license     GPLv2 or later
- * Version: 1.1.1
+ * Version: 1.1.3
  */
+
+if ( ! defined( 'ABSPATH' ) ) exit; // EXIT IF ACCESSED DIRECTLY.
 
 /**
  * ##### PLUGIN REGISTRATION HOOK - RUN WHEN THE PLUGIN IS ACTIVATED #####
@@ -19,10 +21,24 @@ if (!function_exists('esrcpt_slider_plugin_activation')) {
 	/// INSERT A 'SAMPLE SLIDER' CUSTOM POST INTO THE DATABASE.
 	$sample_post_title = sanitize_text_field( 'Sample Slider' );
 
-	
+
 
 		// check if the 'sample slider' already exists (plugin has been activated before).
-		$cpt_post = get_page_by_title( $sample_post_title, 'OBJECT', 'es_slider' );
+		$args = [
+			'post_type'              => 'es_slider',
+			'title'                  => $sample_post_title,
+			'post_status'            => 'any',
+			'posts_per_page'         => 1,
+			'no_found_rows'          => true,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+		];
+
+		$query = new WP_Query( $args );
+
+		$cpt_post = ! empty( $query->posts ) ? $query->posts[0] : null;
+		wp_reset_postdata();
+
 
 		if ( is_null( $cpt_post ) ) {
 			// create the post object.
@@ -52,14 +68,14 @@ if (!function_exists('esrcpt_slider_plugin_activation')) {
 					$image = 'bg_placeholder.png';
 					$button_background = '#4f3214';
 					$button_color = '#fff';
-				} 
+				}
 
 
 				$color = sanitize_hex_color( $color ); // Assuming $color is a hex color code.
 				$image = sanitize_text_field( $image ); // Assuming $image is a filename.
 				$button_background = sanitize_hex_color( $button_background ); // Assuming $button_background is a hex color code.
 				$button_color = sanitize_hex_color( $button_color ); // Assuming $button_color is a hex color code.
-				
+
 
 
 
@@ -70,7 +86,7 @@ if (!function_exists('esrcpt_slider_plugin_activation')) {
 				$content .= "<p>" . esc_html( "Lorem ipsum dolor sit amet, cu usu cibo vituperata, id ius probo maiestatis inciderint, sit eu vide volutpat." ) . "</p>\n";
 				$content .= "</div>\n";
 				$content = wp_kses_post( $content ); // Assuming $content contains HTML, this will allow safe HTML.
-				
+
                 update_post_meta($cpt_id, 'sa_slide' . $i . '_content', $content);
 				$slider_link_url = "#";
 				$slider_link_url = esc_url( $slider_link_url );
@@ -238,12 +254,13 @@ function esrcpt_slider_add_tinymce_plugin( $plugins ) {
     // return $plugins;
 }
 
-
-function enqueue_tinymce_plugin() {
+add_action( 'admin_init', 'esr_enqueue_tinymce' );
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
+function esr_enqueue_tinymce() {
     if ( current_user_can('edit_posts') || current_user_can('edit_pages') ) {
         add_filter('mce_external_plugins', function($plugins) {
             $url = plugins_url('js/add_tinymce_button.js', __FILE__);
-            error_log('TinyMCE Plugin URL: ' . $url); // Check the URL in the PHP error log
+
             $plugins['cpt_slider'] = $url;
             return $plugins;
         });
@@ -253,7 +270,7 @@ function enqueue_tinymce_plugin() {
         });
     }
 }
-add_action('admin_init', 'enqueue_tinymce_plugin');
+
 
 
 // Function to register TinyMCE button
@@ -267,22 +284,22 @@ function esrcpt_slider_register_tinymce_button( $buttons ) {
 if (!function_exists('esrcpt_slider_register')) {
 	function esrcpt_slider_register() {
 		$labels = array(
-			'name'               => _x( 'Easy Sliders', 'post type general name', 'sa_slider_textdomain' ),
-			'singular_name'      => _x( 'Slider', 'post type singular name', 'sa_slider_textdomain' ),
-			'menu_name'          => __( 'Easy Slider', 'sa_slider_textdomain' ),
-			'add_new'            => __( 'Add New Slider', 'sa_slider_textdomain' ),
-			'add_new_item'       => __( 'Add New Slider', 'sa_slider_textdomain' ),
-			'edit_item'          => __( 'Edit Slider', 'sa_slider_textdomain' ),
-			'new_item'           => __( 'New Slider', 'sa_slider_textdomain' ),
-			'view_item'          => __( 'View Slider', 'sa_slider_textdomain' ),
-			'not_found'          => __( 'No sliders found', 'sa_slider_textdomain' ),
-			'not_found_in_trash' => __( 'No sliders found in Trash', 'sa_slider_textdomain' ),
+			'name'               => _x( 'Easy Sliders', 'post type general name', 'easy-slider-revolution' ),
+			'singular_name'      => _x( 'Slider', 'post type singular name', 'easy-slider-revolution' ),
+			'menu_name'          => __( 'Easy Slider', 'easy-slider-revolution' ),
+			'add_new'            => __( 'Add New Slider', 'easy-slider-revolution' ),
+			'add_new_item'       => __( 'Add New Slider', 'easy-slider-revolution' ),
+			'edit_item'          => __( 'Edit Slider', 'easy-slider-revolution' ),
+			'new_item'           => __( 'New Slider', 'easy-slider-revolution' ),
+			'view_item'          => __( 'View Slider', 'easy-slider-revolution' ),
+			'not_found'          => __( 'No sliders found', 'easy-slider-revolution' ),
+			'not_found_in_trash' => __( 'No sliders found in Trash', 'easy-slider-revolution' ),
 		);
 
 		$menu_icon = esc_attr( 'dashicons-images-alt2' );
 		$args   = array(
 			'labels'              => $labels,
-			'description'         => __( 'Easy Slider', 'sa_slider_textdomain' ),
+			'description'         => __( 'Easy Slider', 'easy-slider-revolution' ),
 			'public'              => false,
 			'exclude_from_search' => true,
 			'publicly_queryable'  => false,
@@ -390,7 +407,8 @@ if (!function_exists('esrcpt_slider_get_tinymce_shortcode_array')) {
 			$count           = 0;
 			foreach ( $sa_slider_query->posts as $sa_post ) {
 				$title = esc_js( $sa_post->post_title );
-				echo 'sa_title_arr[' . esc_js( $count ) . "] = '" . $title . "';\n";
+
+				echo 'sa_title_arr[' . esc_js( $count ) . "] = '" . esc_js( $title ) . "';\n";
 				echo 'sa_id_arr[' . esc_js( $count ) . "] = '" . esc_js( $sa_post->ID ) . "';\n";
 				$count++;
 			}
@@ -415,23 +433,23 @@ if (!function_exists('esrcpt_slider_add_meta_boxes')) {
 		$info_duplicated = get_post_meta( $post->ID, 'sa_info_duplicated', true );
 		$info_moved      = get_post_meta( $post->ID, 'sa_info_moved', true );
 		if ( '1' === $info_added ) {
-			add_meta_box( 'esrcpt_slide_added', __( 'Information' ), 'esrcpt_slide_added_content', 'es_slider', 'normal', 'high' );
+			add_meta_box( 'esrcpt_slide_added', __( 'Information' ,'easy-slider-revolution'), 'esrcpt_slide_added_content', 'es_slider', 'normal', 'high' );
 			update_post_meta( $post->ID, 'sa_info_added', '0' );
 		}
 		if ( '1' === $info_deleted ) {
-			add_meta_box( 'esrcpt_slide_deleted', __( 'Information' ), 'esrcpt_slide_deleted_content', 'es_slider', 'normal', 'high' );
+			add_meta_box( 'esrcpt_slide_deleted', __( 'Information' ,'easy-slider-revolution'), 'esrcpt_slide_deleted_content', 'es_slider', 'normal', 'high' );
 			update_post_meta( $post->ID, 'sa_info_deleted', '0' );
 		}
 		if ( '1' === $info_duplicated ) {
-			add_meta_box( 'esrcpt_slide_duplicated', __( 'Information' ), 'esrcpt_slide_duplicated_content', 'es_slider', 'normal', 'high' );
+			add_meta_box( 'esrcpt_slide_duplicated', __( 'Information' ,'easy-slider-revolution'), 'esrcpt_slide_duplicated_content', 'es_slider', 'normal', 'high' );
 			update_post_meta( $post->ID, 'sa_info_duplicated', '0' );
 		}
 		if ( '1' === $info_moved ) {
-			add_meta_box( 'esrcpt_slide_moved', __( 'Information' ), 'esrcpt_slide_moved_content', 'es_slider', 'normal', 'high' );
+			add_meta_box( 'esrcpt_slide_moved', __( 'Information' ,'easy-slider-revolution'), 'esrcpt_slide_moved_content', 'es_slider', 'normal', 'high' );
 			update_post_meta( $post->ID, 'sa_info_moved', '0' );
 		}
-		add_meta_box( 'esrcpt_slider_slides', __( 'Slides' ), 'esrcpt_slider_slides_content', 'es_slider', 'normal', 'high' );
-		add_meta_box( 'esrcpt_slider_shortcode', __( 'Shortcode' ), 'esrcpt_slider_shortcode_content', 'es_slider', 'side', 'high' );
+		add_meta_box( 'esrcpt_slider_slides', __( 'Slides' ,'easy-slider-revolution'), 'esrcpt_slider_slides_content', 'es_slider', 'normal', 'high' );
+		add_meta_box( 'esrcpt_slider_shortcode', __( 'Shortcode','easy-slider-revolution' ), 'esrcpt_slider_shortcode_content', 'es_slider', 'side', 'high' );
 		remove_meta_box( 'mymetabox_revslider_0', 'es_slider', 'normal' ); // remove revolution slider meta box.
 	}
 }
@@ -444,7 +462,7 @@ if (!function_exists('esrcpt_slider_add_meta_boxes')) {
  */
 if (!function_exists('esrcpt_slide_added_content')) {
 	function esrcpt_slide_added_content() {
-		echo "<h3 id='sa_slide_added_mess'>" . esc_html__('A new slide has been added to this slider.', 'your-text-domain') . "</h3>";
+		echo "<h3 id='sa_slide_added_mess'>" . esc_html__('A new slide has been added to this slider.', 'easy-slider-revolution') . "</h3>";
 	}
 }
 
@@ -455,7 +473,7 @@ if (!function_exists('esrcpt_slide_added_content')) {
  */
 if (!function_exists('esrcpt_slide_deleted_content')) {
 	function esrcpt_slide_deleted_content() {
-		echo "<h3 id='sa_slide_deleted_mess'>" . esc_html__('A slide has been deleted from this slider.', 'your-text-domain') . "</h3>";
+		echo "<h3 id='sa_slide_deleted_mess'>" . esc_html__('A slide has been deleted from this slider.', 'easy-slider-revolution') . "</h3>";
 	}
 }
 
@@ -465,7 +483,7 @@ if (!function_exists('esrcpt_slide_deleted_content')) {
  */
 if (!function_exists('esrcpt_slide_duplicated_content')) {
 	function esrcpt_slide_duplicated_content() {
-		echo "<h3 id='sa_slide_duplicated_mess'>" . esc_html__('A slide has been duplicated (copied) within this slider.', 'your-text-domain') . "</h3>";
+		echo "<h3 id='sa_slide_duplicated_mess'>" . esc_html__('A slide has been duplicated (copied) within this slider.', 'easy-slider-revolution') . "</h3>";
 	}
 }
 
@@ -476,7 +494,7 @@ if (!function_exists('esrcpt_slide_duplicated_content')) {
  */
 if (!function_exists('esrcpt_slide_moved_content')) {
 	function esrcpt_slide_moved_content() {
-		echo "<h3 id='sa_slide_moved_mess'>" . esc_html__('The slide order of this slider has been changed.', 'your-text-domain') . "</h3>";
+		echo "<h3 id='sa_slide_moved_mess'>" . esc_html__('The slide order of this slider has been changed.', 'easy-slider-revolution') . "</h3>";
 	}
 }
 
@@ -498,7 +516,7 @@ function esrcpt_slider_slides_content( $post ) {
 
 	echo '<div  class=""><span style="margin-right:20px">Slider Height:</span>';
 		echo "<input type='text' style='width:50px' id='slider_height' name='slider_height' placeholder='500' ";
-		echo "value=''/>px</div>\n";
+		echo "value='" . esc_attr( $slide_height ) . "'/>px</div>\n";
 
 	// NONCE TO PREVENT CSRF SECURITY ATTACKS.
 	wp_nonce_field( basename( __FILE__ ), 'nonce_save_slider' );
@@ -698,7 +716,7 @@ $num_slides    = get_post_meta( $post->ID, 'sa_num_slides', true );
 			$slide_data[ $count ]['link_text']         = 'sa_slide' . $i . '_link_text';
 			$slide_data[ $count ]['link_target']      = 'sa_slide' . $i . '_link_target';
 			$slide_data[ $count ]['button_background'] = 'sa_slide'. $i . '_button_background';
-			$slide_data[ $count ]['button_color']     = 'sa_slide' . $i. '_button_color'; 
+			$slide_data[ $count ]['button_color']     = 'sa_slide' . $i. '_button_color';
 			$slide_data[ $count ]['popup_type']       = 'sa_slide' . $i . '_popup_type';
 			$slide_data[ $count ]['popup_imageid']    = 'sa_slide' . $i . '_popup_imageid';
 			$slide_data[ $count ]['popup_imagetitle'] = 'sa_slide' . $i . '_popup_imagetitle';
@@ -777,7 +795,7 @@ $num_slides    = get_post_meta( $post->ID, 'sa_num_slides', true );
 		 */
 		$tabs_num = $i + 1;
 		echo "<div id='slide_" . esc_html( $tabs_num ) . "_tabs' class='sa_slide_tabs'>\n";
-	
+
 
 		/**
 		 * ####### SLIDE TAB 1 - SLIDE BACKGROUND #######
@@ -874,7 +892,7 @@ $num_slides    = get_post_meta( $post->ID, 'sa_num_slides', true );
 				echo "<span id='" . esc_attr( $slide_data[ $i ]['image_del'] ) . "' onClick=' esc_js(remove_slide_bg_image(\"" . esc_attr( $slide_data[ $i ]['slide_no'] ) . "\"))' title='Delete the background image for this slide'>X</span>\n";
 				echo "</div>\n";
 			} else {
-				echo "<div style='background: transparent url(".plugins_url( '../images/image_placeholder_popup.jpg', __FILE__ ).") no-repeat top left;background-color:#ffffff; background-size:" . esc_attr( $slide_image_size ) . '; ';
+				echo "<div style='background: transparent url(".esc_url( plugins_url( '../images/image_placeholder_popup.jpg', __FILE__ ) ).") no-repeat top left;background-color:#ffffff; background-size:" . esc_attr( $slide_image_size ) . '; ';
 				echo 'background-repeat:' . esc_attr( $slide_image_repeat ) . '; background-color:' . esc_attr( $slide_image_color ) . '; ';
 				echo 'background-position:' . esc_attr( $slide_image_pos ) . ";'></div>\n";
 				echo "<span id='" . esc_attr( $slide_data[ $i ]['image_del'] ) . "' class='sa_hidden' onClick=' esc_js(remove_slide_bg_image(\"" . esc_attr( $slide_data[ $i ]['slide_no'] ) . "\"))' title='Delete the background image for this slide'>X</span>\n";
@@ -1000,7 +1018,7 @@ $num_slides    = get_post_meta( $post->ID, 'sa_num_slides', true );
 			$slide_button_color = '';
 		}
 
-		/** customized Button for each slide **/ 
+		/** customized Button for each slide **/
 
 		//a display text of button on each slide
 		echo '<div class="slide_image_settings_line"><span >Button Text:</span>';
@@ -1038,13 +1056,13 @@ $num_slides    = get_post_meta( $post->ID, 'sa_num_slides', true );
 		echo '</select>';
 		echo "</div>\n";
 
-	
+
 
 		echo "<div style='clear:both; float:none; width:100%; height:1px;'></div>\n";
 		echo "</div>\n";
 		echo "</div>\n";
 
-		
+
 		echo "</div>\n";
 
 		// 3. DELETE STATUS FIELD (hidden) AND DELETE SLIDE BUTTON.
@@ -1097,6 +1115,7 @@ function esrcpt_slider_save_postdata() {
 		$post_title     = get_the_title( $post->ID );
 		$sanitize_title = sanitize_text_field( $post_title );
 		$where          = array( 'ID' => $post->ID );
+		//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->update( $wpdb->posts, array( 'post_title' => $sanitize_title ), $where ); // db call ok; no-cache ok.
 	}
 
@@ -1108,12 +1127,12 @@ function esrcpt_slider_save_postdata() {
 		} else {
 			$total_slides = 1;
 		}
-	
+
 			$duplicate_slide = 0;
-	
-	
+
+
 			$move_slide_up = 0;
-		
+
 
 		// UPDATE CONTENT FOR EACH SLIDE.
 		$slides_saved = 0;
@@ -1280,7 +1299,7 @@ function esrcpt_slider_save_postdata() {
 					$slide_link_text_saved        = 'sa_slide' . $slides_saved . '_link_text';
 					$slide_link_target_saved      = 'sa_slide' . $slides_saved . '_link_target';
 					$slide_button_background_saved = 'sa_slide' . $slides_saved . '_button_background';
-					$slide_button_color_saved     = 'sa_slide' . $slides_saved .'_button_color'; 
+					$slide_button_color_saved     = 'sa_slide' . $slides_saved .'_button_color';
 					$slide_popup_type_saved       = 'NONE';
 					$slide_popup_imageid_saved    = '';
 					$slide_popup_imagetitle_saved = '';
@@ -1356,12 +1375,17 @@ function esrcpt_slider_save_postdata() {
 			if ( isset( $_POST[ 'sa_slide' . $slide1 . '_link_target' ] ) ) {
 				$slide1_link_target = sanitize_text_field( wp_unslash( $_POST[ 'sa_slide' . $slide1 . '_link_target' ] ) );
 			}
-			if( isset( $_POST['sa_slide' . $slide1 . 'button_background' ] ) ){
-				$slide1_button_background = sanitize_text_field( wp_unslash( $_POST['sa_slide' . $slide1. '_button_background']));
+			$bg_key = 'sa_slide' . $slide1 . '_button_background';
+			$color_key = 'sa_slide' . $slide1 . '_button_color';
+
+			if ( isset( $_POST[ $bg_key ] ) ) {
+				$slide1_button_background = sanitize_text_field( wp_unslash( $_POST[ $bg_key ] ) );
 			}
-			if( isset( $_POST['sa_slide' . $slide1 . 'button_color' ] ) ){
-				$slide1_button_color = sanitize_text_field( wp_unslash( $_POST['sa_slide' . $slide1. '_button_color']));
+
+			if ( isset( $_POST[ $color_key ] ) ) {
+				$slide1_button_color = sanitize_text_field( wp_unslash( $_POST[ $color_key ] ) );
 			}
+
 
 			$slide1_popup_type       = '';
 			$slide1_popup_imageid    = '';
@@ -1442,12 +1466,18 @@ function esrcpt_slider_save_postdata() {
 			if ( isset( $_POST[ 'sa_slide' . $slide2 . '_link_target' ] ) ) {
 				$slide2_link_target = sanitize_text_field( wp_unslash( $_POST[ 'sa_slide' . $slide2 . '_link_target' ] ) );
 			}
-			if( isset( $_POST['sa_slide'.$slide2.'_button_background'] )){
-				$slide2_button_background = sanitize_text_field( wp_unslash ($_POST['sa_slide' .$slide2.'_button_background']));
+
+			$bg_key2 = 'sa_slide' . $slide2 . '_button_background';
+			$color_key2 = 'sa_slide' . $slide2 . '_button_color';
+
+			if ( isset( $_POST[ $bg_key2 ] ) ) {
+				$slide2_button_background = sanitize_text_field( wp_unslash( $_POST[ $bg_key2 ] ) );
 			}
-			if( isset( $_POST['sa_slide'.$slide2.'_button_color'] )){
-				$slide2_button_color = sanitize_text_field( wp_unslash ($_POST['sa_slide' .$slide2.'_button_color']));
+
+			if ( isset( $_POST[ $color_key2 ] ) ) {
+				$slide2_button_color = sanitize_text_field( wp_unslash( $_POST[ $color_key2 ] ) );
 			}
+
 			$slide2_popup_type       = '';
 			$slide2_popup_imageid    = '';
 			$slide2_popup_imagetitle = '';
@@ -1536,9 +1566,9 @@ function esrcpt_slider_save_postdata() {
 
 		// UPDATE SLIDER SETTINGS.
 		update_post_meta( $post->ID, 'sa_num_slides', abs( intval( $slides_saved ) ) );
-	
+
 			update_post_meta( $post->ID, 'sa_disable_visual_editor', '0' );
-		
+
 		if ( isset( $_POST['sa_info_added'] ) ) {
 			update_post_meta( $post->ID, 'sa_info_added', abs( intval( $_POST['sa_info_added'] ) ) );
 		}
@@ -1550,172 +1580,173 @@ function esrcpt_slider_save_postdata() {
 		}
 
 			update_post_meta( $post->ID, 'sa_info_duplicated', 0 );
-		
-		
+
+
 			update_post_meta( $post->ID, 'sa_move_slide_up', 0 );
 
 			update_post_meta( $post->ID, 'sa_info_moved', 0);
-	
-	
+
+
 			update_post_meta( $post->ID, 'sa_slide_duration', '10' );
-		
-		
+
+
 			update_post_meta( $post->ID, 'sa_slide_transition', '0.2' );
-		
+
 
 			update_post_meta( $post->ID, 'sa_slide_by', '1' );
-		
-		
+
+
 			update_post_meta( $post->ID, 'sa_loop_slider', '1' );
-		
-	
+
+
 			update_post_meta( $post->ID, 'sa_stop_hover', '1' );
-	
-	
+
+
 			update_post_meta( $post->ID, 'sa_nav_arrows', '1' );
-	
+
 			update_post_meta( $post->ID, 'sa_pagination', '1' );
-		
+
 			update_post_meta( $post->ID, 'sa_random_order', '0' );
-		
-	
+
+
 			update_post_meta( $post->ID, 'sa_reverse_order', '0' );
-		
+
 
 			update_post_meta( $post->ID, 'sa_shortcodes', '0' );
-	
-		
+
+
 			update_post_meta( $post->ID, 'sa_mouse_drag', '1' );
-		
-	
+
+
 			update_post_meta( $post->ID, 'sa_touch_drag', '1' );
 
-	
+
 			update_post_meta( $post->ID, 'sa_mousewheel', '0' );
-		
+
 
 			update_post_meta( $post->ID, 'sa_click_advance', '0' );
-	
+
 			update_post_meta( $post->ID, 'sa_auto_height', '0' );
-		
-	
+
+
 			update_post_meta( $post->ID, 'sa_vert_center', '0' );
-		
+
 
 		// UPDATE SLIDER ITEMS DISPLAYED.
 
 			update_post_meta( $post->ID, 'sa_items_width1', '480' );
 
 			update_post_meta( $post->ID, 'sa_items_width2', '768');
-		
+
 			update_post_meta( $post->ID, 'sa_items_width3', '980' );
-		
-		
+
+
 			update_post_meta( $post->ID, 'sa_items_width4', '1200');
-		
+
 			update_post_meta( $post->ID, 'sa_items_width5', '1500' );
-		
-	
+
+
 			update_post_meta( $post->ID, 'sa_items_width6', '1500' );
-		
-		
+
+
 			update_post_meta( $post->ID, 'sa_transition', 'Slide');
-		
-	
+
+
 			update_post_meta( $post->ID, 'sa_hero_slider', '0' );
-		
-	
+
+
 			update_post_meta( $post->ID, 'sa_showcase_slider', '0' );
-		
-		
+
+
 			update_post_meta( $post->ID, 'sa_showcase_width', '120' );
-		
+
 
 			update_post_meta( $post->ID, 'sa_showcase_tablet', '0' );
-		
-		
+
+
 			update_post_meta( $post->ID, 'sa_showcase_width_tab', '130' );
-		
-	
+
+
 			update_post_meta( $post->ID, 'sa_showcase_mobile', '0' );
-		
+
 			update_post_meta( $post->ID, 'sa_showcase_width_mob', '140' );
 
 
 		// UPDATE SLIDER STYLE.
-		
+
 			$post_css_id = 'Slider_'.$post->ID;
 			update_post_meta( $post->ID, 'sa_css_id', sanitize_text_field( $post_css_id ) );
-		
+
 
 			update_post_meta( $post->ID, 'sa_background_color', 'rgba(0,0,0,0)' );
 
 			update_post_meta( $post->ID, 'sa_border_width', '0' );
-	
+
 			update_post_meta( $post->ID, 'sa_border_color', 'rgba(0,0,0,0)' );
-	
-		
+
+
 			update_post_meta( $post->ID, 'sa_border_radius', '0' );
-	
+
 			update_post_meta( $post->ID, 'sa_wrapper_padd_top', '0' );
-		
+
 			update_post_meta( $post->ID, 'sa_wrapper_padd_right','0' );
-		
+
 			update_post_meta( $post->ID, 'sa_wrapper_padd_bottom', '0' );
-		
+
 			update_post_meta( $post->ID, 'sa_wrapper_padd_left', '0' );
-			if($_POST['slider_height']){
-				update_post_meta( $post->ID, 'sa_slide_min_height_perc', $_POST["slider_height"] );
-			}else{
-				update_post_meta( $post->ID, 'sa_slide_min_height_perc', '500' );
-			}
+		$slider_height = isset( $_POST['slider_height'] ) ? absint( wp_unslash( $_POST['slider_height'] ) ) : 500;
+
+update_post_meta( $post->ID, 'sa_slide_min_height_perc', $slider_height );
+
 			update_post_meta( $post->ID, 'sa_slide_padding_tb', '5' );
-	
+
 			update_post_meta( $post->ID, 'sa_slide_padding_lr', '5' );
-		
+
 			update_post_meta( $post->ID, 'sa_slide_margin_lr','0' );
-	
-	
+
+
 			update_post_meta( $post->ID, 'sa_slide_icons_location', 'Center Center' );
-	
-		
+
+
 			update_post_meta( $post->ID, 'sa_slide_icons_color', 'white' );
 
+
+
 			update_post_meta( $post->ID, 'sa_autohide_arrows', '0' );
-		
+
 
 			update_post_meta( $post->ID, 'sa_dot_per_slide', '1' );
-	
-		
+
+
 			update_post_meta( $post->ID, 'sa_slide_icons_visible', '1' );
 
 
 			update_post_meta( $post->ID, 'sa_slide_icons_fullslide', '0' );
-		
+
 
 		// OTHER SETTINGS.
 		$other_settings = '';
-	
+
 			$other_settings .= '0';
-	
-
-			$other_settings .= '|0';
 
 
 			$other_settings .= '|0';
-	
+
+
+			$other_settings .= '|0';
+
 			$other_settings .= '|0';
 
 			$other_settings .= '|0';
 
 		// disable preview setting (now removed & permanently disabled).
 		$other_settings .= '|1';
-	
+
 			$other_settings .= '|full';
-	
+
 
 			$other_settings .= '|0';
-		
+
 		update_post_meta( $post->ID, 'sa_other_settings', $other_settings );
 		// starting slide number.
 		if ( isset( $_POST['sa_start_pos'] ) ) {
@@ -1771,8 +1802,8 @@ if(!function_exists('esrcpt_slider_extra_sa_menu_pages')){
 function esrcpt_slider_extra_sa_menu_pages() {
 	add_submenu_page(
 		'edit.php?post_type=sa_slider',
-		__( 'Re-Order Slides', 'menu-sa-order' ),
-		__( 'Re-Order Slides', 'menu-sa-order' ),
+		__( 'Re-Order Slides', 'easy-slider-revolution' ),
+		__( 'Re-Order Slides', 'easy-slider-revolution' ),
 		'manage_options',
 		'reorderslides',
 		'esrcpt_slider_sa_reorder_slides_page'
@@ -1789,7 +1820,7 @@ function esrcpt_slider_sa_reorder_slides_page() {
 		$placeholder_image = esc_url(plugins_url( '../images/bg_placeholder.png', __FILE__ ));
 
 		echo "<div id='sa_reorder_slides'>\n";
-		echo '<h1>'.esc_html__('EASY SLIDER - Re-Order Slides', 'your-text-domain').'</h1>';
+		echo '<h1>'.esc_html__('EASY SLIDER - Re-Order Slides', 'easy-slider-revolution').'</h1>';
 
 		if ( isset( $_SERVER['REQUEST_METHOD'] ) && ( 'POST' === $_SERVER['REQUEST_METHOD'] )
 			&& isset( $_POST['reorder_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['reorder_nonce'] ) ), 'reorder_action' ) ) {
@@ -1834,7 +1865,7 @@ function esrcpt_slider_sa_reorder_slides_page() {
 					update_post_meta( $slider_id, $key, $value );
 				}
 
-				echo "<h3 id='sar_success_message'>".esc_html__('SLIDE ORDER HAS BEEN UPDATED', 'your-text-domain')."</h3>";
+				echo "<h3 id='sar_success_message'>".esc_html__('SLIDE ORDER HAS BEEN UPDATED', 'easy-slider-revolution')."</h3>";
 		} else {
 			if ( isset( $_POST['sar_del_slides'] ) && ( '' !== $_POST['sar_del_slides'] ) ) {
 				$del_slides     = sanitize_text_field( wp_unslash( $_POST['sar_del_slides'] ) );
@@ -1883,9 +1914,9 @@ function esrcpt_slider_sa_reorder_slides_page() {
 				}
 
 				if ( 1 === $tot_del ) {
-					echo "<h3 id='sar_success_message'>" . esc_html( $tot_del ) . ' '.esc_html__('SLIDE HAS BEEN DELETED', 'your-text-domain').'</h3>';
+					echo "<h3 id='sar_success_message'>" . esc_html( $tot_del ) . ' '.esc_html__('SLIDE HAS BEEN DELETED', 'easy-slider-revolution').'</h3>';
 				} else {
-					echo "<h3 id='sar_success_message'>" . esc_html( $tot_del ) . ' '.esc_html__('SLIDES HAVE BEEN DELETED', 'your-text-domain').'</h3>';
+					echo "<h3 id='sar_success_message'>" . esc_html( $tot_del ) . ' '.esc_html__('SLIDES HAVE BEEN DELETED', 'easy-slider-revolution').'</h3>';
 				}
 			}
 		}
